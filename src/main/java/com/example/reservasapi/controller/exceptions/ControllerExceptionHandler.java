@@ -2,6 +2,7 @@ package com.example.reservasapi.controller.exceptions;
 
 import com.example.reservasapi.service.exceptions.DateNotAvailableException;
 import com.example.reservasapi.service.exceptions.IncompatibleDatesException;
+import com.example.reservasapi.service.exceptions.InvalidDateException;
 import com.example.reservasapi.service.exceptions.ReservaNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -35,6 +36,14 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandardError> dateNotAvailable(DateNotAvailableException e, HttpServletRequest request) {
         String error = "Data não disponível para reserva";
         HttpStatus status = HttpStatus.CONFLICT;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(InvalidDateException.class)
+    public ResponseEntity<StandardError> invalidDate(InvalidDateException e, HttpServletRequest request) {
+        String error = "Data inválida";
+        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }

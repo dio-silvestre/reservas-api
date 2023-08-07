@@ -5,11 +5,13 @@ import com.example.reservasapi.domain.enums.ReservaStatus;
 import com.example.reservasapi.repository.ReservaRepository;
 import com.example.reservasapi.service.exceptions.DateNotAvailableException;
 import com.example.reservasapi.service.exceptions.IncompatibleDatesException;
+import com.example.reservasapi.service.exceptions.InvalidDateException;
 import com.example.reservasapi.service.exceptions.ReservaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +26,14 @@ public class ReservaService {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-        if (foundObj.isPresent()) {
+        Date dataAtual = new Date();
+
+        if (foundObj.isPresent() && foundObj.get().getStatus() != ReservaStatus.CANCELADA) {
             throw new DateNotAvailableException(sdf.format(foundObj.get().getDataFim()));
+        }
+
+        if (dataAtual.compareTo(obj.getDataInicio()) > 0) {
+            throw new InvalidDateException(sdf.format(dataAtual));
         }
 
         if (obj.getDataInicio().compareTo(obj.getDataFim()) > 0) {

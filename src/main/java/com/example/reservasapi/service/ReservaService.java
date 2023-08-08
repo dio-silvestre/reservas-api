@@ -45,7 +45,7 @@ public class ReservaService {
     }
 
     public List<Reserva> findAll() {
-        return reservaRepository.findAllNotCanceled();
+        return reservaRepository.findAllOrderedByDate();
     }
 
     public Reserva findById(Integer id) {

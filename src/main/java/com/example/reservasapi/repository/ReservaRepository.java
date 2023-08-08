@@ -12,8 +12,11 @@ import java.util.List;
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 
-    @Query("SELECT r FROM Reserva r WHERE r.status <> CANCELADA ORDER BY r.dataInicio ASC")
-    List<Reserva> findAllNotCanceled();
+    @Query("SELECT r FROM Reserva r ORDER BY r.dataInicio ASC")
+    List<Reserva> findAllOrderedByDate();
+
+    @Query("SELECT r FROM Reserva r WHERE r.status = CANCELADA")
+    List<Reserva> findAllCanceled();
 
     @Query("SELECT r FROM Reserva r WHERE r.dataInicio = ?1")
     Reserva findByDate(Date date);
